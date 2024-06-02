@@ -1,0 +1,31 @@
+{
+  "name": "lg-admin-extend",
+  "author": "Mr. Python",
+  "repository": "https://github.com/Mr-Python-in-China/lg-admin-extend.git",
+  "license": "LGPL-2.1-or-later",
+  "version": "0.0.0-dev",
+  "packageManager": "yarn@4.2.2",
+  "scripts": {
+    "dev": "webpack serve",
+    "prettier:check": "prettier -c .",
+    "prettier:write": "prettier -w ."
+  },
+  "devDependencies": {
+    "@types/serviceworker": "^0.0.86",
+    "prettier": "^3.3.0",
+    "typescript": "^5.4.5",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.4"
+  },
+  "prettier": {
+    "printWidth": 80,
+    "tabWidth": 2,
+    "useTabs": false,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "none",
+    "bracketSpacing": true,
+    "arrowParens": "avoid"
+  }
+}
