@@ -1,22 +1,65 @@
 {
   "name": "lg-admin-extend",
+  "description": "Better Luogu admin page",
+  "description:zh": "更好用的洛谷后台",
+  "type": "module",
   "author": "Mr. Python",
   "repository": "https://github.com/Mr-Python-in-China/lg-admin-extend.git",
   "license": "LGPL-2.1-or-later",
   "version": "0.0.0-dev",
-  "packageManager": "yarn@4.2.2",
+  "private": true,
+  "packageManager": "yarn@4.3.1",
   "scripts": {
-    "dev": "webpack serve",
+    "server": "http-server ./docs -p 54220",
+    "dev": "webpack serve --mode development",
+    "build": "webpack --mode production",
+    "build-with-bundle-analyzer": "webpack --mode production --env analyze",
     "prettier:check": "prettier -c .",
-    "prettier:write": "prettier -w ."
+    "prettier:write": "prettier -w .",
+    "lint:fix": "eslint --fix"
+  },
+  "dependencies": {
+    "@fluentui/react-components": "^9.53.0",
+    "@fluentui/react-icons": "^2.0.249",
+    "@mr.python/axios-userscript-adapter": "^1.0.0",
+    "@vscode/markdown-it-katex": "^1.1.0",
+    "axios": "^1.7.2",
+    "dayjs": "^1.11.11",
+    "lodash": "^4.17.21",
+    "markdown-it": "^14.1.0",
+    "markdown-it-highlightjs": "^4.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.4.0",
+    "@types/lodash": "^4",
+    "@types/markdown-it": "^14",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18",
     "@types/serviceworker": "^0.0.86",
+    "@types/tampermonkey": "^5.0.3",
+    "@types/webpack-bundle-analyzer": "^4",
+    "css-loader": "^7.1.2",
+    "css-minimizer-webpack-plugin": "^7.0.0",
+    "eslint": "8.56.0",
+    "eslint-plugin-react": "^7.34.2",
+    "http-server": "^14.1.1",
+    "mini-css-extract-plugin": "^2.9.0",
+    "postcss": "^8.4.38",
+    "postcss-loader": "^8.1.1",
+    "postcss-preset-env": "^9.5.14",
     "prettier": "^3.3.0",
+    "terser-webpack-plugin": "^5.3.10",
+    "ts-loader": "^9.5.1",
     "typescript": "^5.4.5",
+    "typescript-eslint": "^7.11.0",
     "webpack": "^5.91.0",
+    "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.0.4"
+    "webpack-dev-server": "^4.5.12",
+    "webpack-monkey": "^0.2.1",
+    "webpackbar": "^6.0.1"
   },
   "prettier": {
     "printWidth": 80,
@@ -27,5 +70,17 @@
     "trailingComma": "none",
     "bracketSpacing": true,
     "arrowParens": "avoid"
+  },
+  "browserslist": {
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ],
+    "production": [
+      ">0.1%",
+      "not dead",
+      "not op_mini all"
+    ]
   }
 }
