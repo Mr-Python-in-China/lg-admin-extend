@@ -4,9 +4,9 @@
       "name": "Launch Edge",
       "request": "launch",
       "type": "msedge",
-      "url": "http://localhost:54220",
+      "url": "https://mr-python-in-china.github.io/lg-admin-extend/",
       "webRoot": "${workspaceFolder}",
-      "preLaunchTask": "dev"
+      "preLaunchTask": "debug"
     }
   ]
 }

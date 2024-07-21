@@ -2,11 +2,31 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "debug",
+      "dependsOn": ["local-server", "dev"]
+    },
+    {
       "label": "dev",
       "isBackground": true,
       "type": "npm",
       "script": "dev",
       "problemMatcher": "$ts-webpack-watch"
+    },
+    {
+      "label": "local-server",
+      "isBackground": true,
+      "type": "npm",
+      "script": "server",
+      "problemMatcher": [
+        {
+          "pattern": { "regexp": "___no_matter___" },
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "Starting up http-server",
+            "endsPattern": "Hit CTRL-C to stop the server"
+          }
+        }
+      ]
     }
   ]
 }

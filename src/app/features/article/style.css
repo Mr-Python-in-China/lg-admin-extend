@@ -1,0 +1,111 @@
+article {
+  line-height: 1.5;
+  color: #404040;
+  font-size: 16px;
+}
+.articleFeature {
+  display: grid;
+  grid-template:
+    'a b'
+    'a c' min(300px, 50%)
+    / 50% 50%;
+  height: 100%;
+}
+.articleViewer {
+  grid-area: a;
+  overflow: auto;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+.articleViewer img {
+  max-width: 100%;
+}
+.articleViewer pre {
+  font-size: 0.875em;
+  background-color: #fafafa;
+  border: 1px solid #e8e8e8;
+  border-radius: 2px;
+}
+.articleInfo {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 8px;
+  margin-bottom: 4px;
+  overflow: auto;
+}
+.articleLoadingIcon {
+  height: 100%;
+}
+.articleInfo > .adminCommit {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.articleInfo > .adminCommit > textarea {
+  flex: 1;
+  --margin-left: 0;
+  width: calc(100% - var(--margin-left));
+  resize: none;
+  display: block;
+  margin-left: var(--margin-left);
+  box-sizing: border-box;
+  border: 1px dashed gray;
+  border-radius: 5px;
+  outline: none;
+  min-height: 5em;
+}
+.articleInfo > .adminCommit > textarea:focus {
+  border: 1px solid gray;
+}
+div.articleViewer.articleQueueEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+div.articleQueueEmpty > img {
+  display: block;
+}
+div.articleQueueEmpty > span {
+  color: gray;
+  font-size: 18px;
+  font-style: italic;
+}
+.articleOperator {
+  grid-area: c;
+  margin: 8px;
+  margin-top: 4px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.articleOperator > .submitButton {
+  display: flex;
+  column-gap: 15px;
+  justify-content: flex-end;
+  align-items: center;
+}
+.viewOperatorCommit {
+  margin-left: 1em;
+}
+.skipTimeField {
+  display: flex;
+  align-items: center;
+}
+.jumpByTime-PopoverSurface {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  gap: 12px;
+}
+.jumpByTime-PopoverSurface > div {
+  display: flex;
+  align-items: center;
+}
+.jumpByTime-PopoverSurface > div > .fui-Input {
+  flex: 1;
+  width: 50px;
+}
