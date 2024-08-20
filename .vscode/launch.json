@@ -1,12 +1,18 @@
 {
   "configurations": [
     {
-      "name": "Launch Edge",
+      "name": "debug main",
       "request": "launch",
       "type": "msedge",
       "url": "https://mr-python-in-china.github.io/lg-admin-extend/",
-      "webRoot": "${workspaceFolder}",
       "preLaunchTask": "debug"
+    },
+    {
+      "name": "test articleViewer",
+      "request": "launch",
+      "type": "msedge",
+      "url": "http://localhost:22552/",
+      "preLaunchTask": "test:articleViewer"
     }
   ]
 }

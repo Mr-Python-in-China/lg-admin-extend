@@ -76,7 +76,6 @@ async function (env, argv) {
           /**@type {import('./meta.js').default & {match: string | string[]}} */
           const res = (await import(file)).default;
           if (typeof res.match === 'string') res.match = [res.match];
-          if (mode === 'development') res.match.push('*://localhost/');
           return res;
         }
       },
@@ -87,12 +86,7 @@ async function (env, argv) {
       ...(env.analyze ? [new BundleAnalyzerPlugin()] : []),
       new MiniCssExtractPlugin(),
       new Webpack.DefinePlugin({
-        RUN:
-          mode == 'development'
-            ? () =>
-                window.location.hostname !== 'localhost' ||
-                window.location.port === '54220'
-            : () => true
+        RUN: () => true
       })
     ]
   });

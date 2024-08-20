@@ -1,4 +1,4 @@
-import Axios from 'axios';
+import Axios, { AxiosRequestConfig, CancelToken } from 'axios';
 import GMadaptr from '@mr.python/axios-userscript-adapter';
 
 import { AdminMeta, SolutionAdminInfo } from '../interface';
@@ -6,6 +6,12 @@ import { AdminMeta, SolutionAdminInfo } from '../interface';
 const axios = Axios.create({
   baseURL: 'https://www.luogu.com.cn/sadmin',
   adapter: GMadaptr
+});
+
+axios.interceptors.response.use(v => {
+  if (typeof v.data === 'object' && v.data.retry)
+    return axios.request(v.config);
+  else return v;
 });
 
 GM_xmlhttpRequest; // add it to @grant
@@ -22,12 +28,13 @@ export const fetchMyInfo = () =>
       return x.data.user;
     });
 
-export const getArticle = (skipBefore?: number) =>
+export const getArticle = (skipBefore: number, config?: AxiosRequestConfig) =>
   axios
     .post<SolutionAdminInfo>('api/article/promotionReview/next', undefined, {
       params: {
         skipBefore: skipBefore || 0
-      }
+      },
+      ...config
     })
     .then(x => x.data);
 

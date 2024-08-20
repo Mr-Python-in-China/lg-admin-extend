@@ -27,6 +27,13 @@
           }
         }
       ]
+    },
+    {
+      "label": "test:articleViewer",
+      "isBackground": true,
+      "type": "npm",
+      "script": "test:articleViewer",
+      "problemMatcher": "$ts-webpack-watch"
     }
   ]
 }

@@ -7,7 +7,7 @@ article {
   display: grid;
   grid-template:
     'a b'
-    'a c' min(300px, 50%)
+    'a c' min(400px, 50%)
     / 50% 50%;
   height: 100%;
 }
@@ -17,14 +17,8 @@ article {
   padding-left: 8px;
   padding-right: 8px;
 }
-.articleViewer img {
-  max-width: 100%;
-}
-.articleViewer pre {
-  font-size: 0.875em;
-  background-color: #fafafa;
-  border: 1px solid #e8e8e8;
-  border-radius: 2px;
+pre.articleViewer > code {
+  white-space: pre-wrap;
 }
 .articleInfo {
   grid-column: 2;

@@ -1,6 +1,6 @@
 import { SolutionAdminInfo } from '../../../interface';
 import React, { useEffect, useRef, useState } from 'react';
-import { ArctleViewer } from './articleViewer';
+import ArticleViewer from './articleViewer';
 import {
   Button,
   Field,
@@ -13,8 +13,7 @@ import {
   InfoLabel,
   Popover,
   PopoverTrigger,
-  PopoverSurface,
-  Label
+  PopoverSurface
 } from '@fluentui/react-components';
 import { getArticle, submitArticleCheckResult } from '../../../fetch';
 import { ErrorDiv, InputDateTime, UserName } from '../../utils';
@@ -23,6 +22,7 @@ import emptyQueueImage from 'assets/emptyQueue.webp';
 import './style.css';
 import { useNotUndefinedContext } from '../../../notUndefinedContext';
 import { MyInfoContext } from '../../contexts';
+import { isCancel } from 'axios';
 
 export default function Article() {
   const [status, setStatus] = useState<{
@@ -34,6 +34,7 @@ export default function Article() {
   const [skipBefore, setSkipBefore] = useState<number>(0);
   const [otherRefuseCommit, setOtherRefuseCommit] = useState('');
   const [showAdminInfo, setShowAdminInfo] = useState(true);
+  const [viewSourceCode, setViewSourceCode] = useState(false);
   const myProfile = useNotUndefinedContext(MyInfoContext);
 
   let refuseCommit = otherRefuseCommit;
@@ -42,18 +43,19 @@ export default function Article() {
       refuseCommit += `。审核管理员：${myProfile.name}，对审核结果有疑问请私信交流`;
 
   useEffect(() => {
-    let ignore = false;
-    getArticle(skipBefore / 1000)
+    const cancel = new AbortController();
+    getArticle(skipBefore / 1000, { signal: cancel.signal })
       .then(v => {
-        if (!ignore)
-          setStatus({ details: v }),
-            v.article && setSkipBefore(v.article.promoteResult.updateAt * 1000);
+        console.log(v);
+        setStatus({ details: v }),
+          v.article && setSkipBefore(v.article.promoteResult.updateAt * 1000);
       })
       .catch(e => {
-        if (!ignore)
-          console.error('Error in feature Article', e), setFetchError(e);
+        console.log(e);
+        if (isCancel(e)) return;
+        console.error('Error in feature Article', e), setFetchError(e);
       });
-    return () => void (ignore = true);
+    return () => void cancel.abort();
   }, []);
   function updateArticle() {
     setStatus(null);
@@ -79,9 +81,20 @@ export default function Article() {
     <div className="articleFeature">
       {details ? (
         details.article ? (
-          <ArctleViewer className="articleViewer">
-            {details.article.content}
-          </ArctleViewer>
+          <>
+            <pre
+              className="articleViewer"
+              style={{ display: viewSourceCode ? 'block' : 'none' }}
+            >
+              <code>{details.article.content}</code>
+            </pre>
+            <div
+              className="articleViewer"
+              style={{ display: viewSourceCode ? 'none' : 'block' }}
+            >
+              <ArticleViewer>{details.article.content}</ArticleViewer>
+            </div>
+          </>
         ) : (
           <div className={'articleViewer articleQueueEmpty'}>
             <img src={emptyQueueImage} width={300} />
@@ -147,6 +160,11 @@ export default function Article() {
         ) : undefined}
       </div>
       <div className="articleOperator">
+        <Switch
+          label="显示 MarkDown 源代码"
+          checked={viewSourceCode}
+          onChange={(e, x) => setViewSourceCode(x.checked)}
+        />
         <Field label="其他原因：">
           <Textarea
             className="otherReasons"
@@ -157,7 +175,7 @@ export default function Article() {
         <Switch
           label="显示审核员身份"
           checked={showAdminInfo}
-          onChange={(e, x) => setShowAdminInfo(!!x.checked)}
+          onChange={(e, x) => setShowAdminInfo(x.checked)}
         />
         <Field label="预览：">
           <Text as="span" className="viewOperatorCommit">
