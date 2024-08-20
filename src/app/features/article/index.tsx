@@ -62,7 +62,6 @@ export default function Article() {
     getArticle(skipBefore / 1000)
       .then(v => {
         setStatus({ details: v });
-        setOtherRefuseCommit('');
         if (v.article) setSkipBefore(v.article.promoteResult.updateAt * 1000);
       })
       .catch(
@@ -74,6 +73,7 @@ export default function Article() {
     setStatus({ details: details, submiting: true });
     await submitArticleCheckResult([details.article.lid, refuseCommit || true]);
     setStatus(null);
+    setOtherRefuseCommit('');
     updateArticle();
   }
 
@@ -119,34 +119,34 @@ export default function Article() {
                     'YYYY/MM/DD HH:mm:ss'
                   )}
               。文章 LID：
-              <a
+              <Link
                 href={`https://www.luogu.com.cn/article/${details.article.lid}`}
                 target="_blank"
               >
                 {details.article.lid}
-              </a>
+              </Link>
             </Text>
             {details.article.solutionFor && (
               <Text>
                 关联于题目{' '}
-                <a
+                <Link
                   href={`https://www.luogu.com.cn/problem/${details.article.solutionFor.pid}`}
                   target="_blank"
                 >
                   {details.article.solutionFor.pid}{' '}
                   {details.article.solutionFor.title}
-                </a>
+                </Link>
                 。
                 {details.countForProblem && (
                   <>
                     共有 {details.countForProblem.pending} 篇待审核题解，
                     {details.countForProblem.available} 篇
-                    <a
+                    <Link
                       href={`https://www.luogu.com.cn/problem/solution/${details.article.solutionFor.pid}`}
                       target="_blank"
                     >
                       已通过题解
-                    </a>
+                    </Link>
                     。
                   </>
                 )}
@@ -185,6 +185,7 @@ export default function Article() {
                   很遗憾，您的《
                   <Link
                     href={`https://www.luogu.com.cn/article/${details.article.lid}`}
+                    target='_blank'
                   >
                     {details.article.title}
                   </Link>

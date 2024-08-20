@@ -3,16 +3,23 @@ import {
   FluentProvider,
   webLightTheme,
   Image,
-  Spinner
+  Spinner,
+  Theme
 } from '@fluentui/react-components';
-
-import Features from './features';
-
-import './style.css';
 import { UserSummary } from 'luogu-api';
 import { fetchMyInfo } from '../fetch';
 import { MyInfoContext } from './contexts';
 import { ErrorDiv } from './utils';
+
+import Features from './features';
+
+import './style.css';
+
+const theme: Theme = {
+  ...webLightTheme,
+  colorBrandForegroundLink: '#3498db',
+  colorBrandForegroundLinkHover: '#0056b3'
+};
 
 export default function App() {
   const [nowFeature, setNowFeature] = useState<number>(0);
@@ -33,7 +40,7 @@ export default function App() {
   }, []);
 
   return (
-    <FluentProvider theme={webLightTheme}>
+    <FluentProvider theme={theme}>
       <div className="root">
         {!fetchError ? (
           <>

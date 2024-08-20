@@ -3,18 +3,7 @@ import React from 'react';
 import { UserSummary } from 'luogu-api';
 import { isError } from 'lodash';
 import { isAxiosError } from 'axios';
-import {
-  Dialog,
-  DialogSurface,
-  DialogBody,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  DialogTrigger,
-  Button,
-  tokens,
-  Input
-} from '@fluentui/react-components';
+import { Button, tokens, Input } from '@fluentui/react-components';
 import dayjs from 'dayjs';
 import { DismissCircleRegular } from '@fluentui/react-icons';
 
@@ -50,9 +39,11 @@ export function UserName({ children }: { children: UserSummary }) {
       }}
     >
       <>{children.name}</>
-      <span style={{ marginLeft: '4px' }}>
-        <CcfLevelSvg level={children.ccfLevel} />
-      </span>
+      {children.ccfLevel > 2 && (
+        <span style={{ marginLeft: '4px' }}>
+          <CcfLevelSvg level={children.ccfLevel} />
+        </span>
+      )}
       {children.badge && (
         <span
           className="username-badge"
