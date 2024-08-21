@@ -6,7 +6,7 @@
   "author": "Mr. Python",
   "repository": "https://github.com/Mr-Python-in-China/lg-admin-extend.git",
   "license": "LGPL-2.1-or-later",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "packageManager": "yarn@4.3.1",
   "scripts": {
