@@ -23,7 +23,8 @@ const theme: Theme = {
 
 export default function App() {
   const [nowFeature, setNowFeature] = useState<number>(0);
-  const NowFeatureComponent = Features[nowFeature][1];
+  const NowFeatureComponent =
+    nowFeature >= 0 ? Features[nowFeature][1] : React.Fragment;
 
   const [myInfo, setMyInfo] = useState<UserSummary | null>(null);
   const [fetchError, setFetchError] = useState<unknown | undefined>(undefined);
@@ -38,6 +39,9 @@ export default function App() {
       });
     return () => void (ignore = true);
   }, []);
+  useEffect(() => {
+    if (nowFeature < 0) setNowFeature(-nowFeature - 1);
+  });
 
   return (
     <FluentProvider theme={theme}>
@@ -64,7 +68,8 @@ export default function App() {
               <div>
                 {Features.map((s, i) => (
                   <button
-                    onClick={() => setNowFeature(i)}
+                    type="button"
+                    onClick={() => setNowFeature(-i - 1)}
                     key={i}
                     className="nav-item"
                     style={{ fontWeight: nowFeature === i ? 'bold' : 'normal' }}
