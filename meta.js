@@ -6,7 +6,7 @@ import { readFileSync } from 'fs';
 const package_meta = JSON.parse(readFileSync('./package.json').toString());
 
 const releasePath =
-  'https://github.com/Mr-Python-in-China-lg-admin-extend/releases/latest/download/lg-admin-extend.user.js';
+  'https://github.com/Mr-Python-in-China/lg-admin-extend/releases/latest/download/lg-admin-extend.user.js';
 
 /** @type {import("webpack-monkey").Meta} */
 const meta = {
