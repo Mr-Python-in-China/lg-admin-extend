@@ -1,32 +1,15 @@
-import React from 'react';
+import React, { memo, useEffect, useState } from 'react';
 
 import { UserSummary } from 'luogu-api';
 import { isError } from 'lodash';
-import { isAxiosError } from 'axios';
-import { Button, tokens, Input } from '@fluentui/react-components';
+import { isAxiosError, isCancel } from 'axios';
+import { Button, tokens, Input, Link } from '@fluentui/react-components';
 import dayjs from 'dayjs';
 import { DismissCircleRegular } from '@fluentui/react-icons';
+import { getProblemData } from '../fetch';
+import { UsernameColor, DifficultyColor } from '../constants';
 
 export type Override<P, S> = Omit<P, keyof S> & S;
-
-export const UsernameColor = {
-    Purple: 'rgb(157, 61, 207)',
-    Red: 'rgb(254, 76, 97)',
-    Orange: 'rgb(243, 156, 17)',
-    Green: 'rgb(82, 196, 26)',
-    Blue: 'rgb(52, 152, 219)',
-    Gray: 'rgb(191, 191, 191)'
-  },
-  DifficultyColor = [
-    '#BFBFBF',
-    '#FE4C61',
-    '#F39C11',
-    '#FFC116',
-    '#52C41A',
-    '#3498DB',
-    '#9D3DCF',
-    '#0E1D69'
-  ];
 
 export function UserName({ children }: { children: UserSummary }) {
   return (
@@ -151,3 +134,54 @@ export function InputDateTime(
     />
   );
 }
+
+export const ProblemNameWithDifficulty = memo(
+  ({
+    pid,
+    name,
+    difficulty
+  }: {
+    pid: string;
+    name?: string;
+    difficulty?: number;
+  }) => {
+    const [difficultyState, setDifficultyState] = useState<number | undefined>(
+      difficulty
+    );
+    const [nameState, setNameState] = useState<string | undefined>(name);
+    useEffect(() => {
+      if (difficultyState !== undefined && nameState !== undefined) return;
+      const cancel = new AbortController();
+      getProblemData(pid, { signal: cancel.signal })
+        .then(data => {
+          if (difficultyState === undefined)
+            setDifficultyState(data.currentData.problem.difficulty);
+          if (nameState === undefined)
+            setNameState(data.currentData.problem.title);
+        })
+        .catch(e => {
+          if (isCancel(e)) return;
+          console.error('Error when fetch problem data', e);
+        });
+      return () => cancel.abort();
+    }, []);
+    return (
+      <Link href={'https://www.luogu.com.cn/problem/' + pid} target="_blank">
+        <span
+          style={
+            difficultyState !== undefined
+              ? {
+                  fontWeight: 'bold',
+                  fontSize: '16px',
+                  color: DifficultyColor[difficultyState]
+                }
+              : undefined
+          }
+        >
+          {pid}
+        </span>
+        {nameState !== undefined && ' ' + nameState}
+      </Link>
+    );
+  }
+);

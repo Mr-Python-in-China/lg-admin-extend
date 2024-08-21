@@ -16,13 +16,19 @@ import {
   PopoverSurface
 } from '@fluentui/react-components';
 import { getArticle, submitArticleCheckResult } from '../../../fetch';
-import { ErrorDiv, InputDateTime, UserName } from '../../utils';
+import {
+  ErrorDiv,
+  InputDateTime,
+  ProblemNameWithDifficulty,
+  UserName
+} from '../../utils';
 import dayjs from 'dayjs';
 import emptyQueueImage from 'assets/emptyQueue.webp';
 import './style.css';
 import { useNotUndefinedContext } from '../../../notUndefinedContext';
 import { MyInfoContext } from '../../contexts';
 import { isCancel } from 'axios';
+import { oldDifficultySystem } from '../../../constants';
 
 export default function Article() {
   const [status, setStatus] = useState<{
@@ -46,12 +52,10 @@ export default function Article() {
     const cancel = new AbortController();
     getArticle(skipBefore / 1000, { signal: cancel.signal })
       .then(v => {
-        console.log(v);
         setStatus({ details: v }),
           v.article && setSkipBefore(v.article.promoteResult.updateAt * 1000);
       })
       .catch(e => {
-        console.log(e);
         if (isCancel(e)) return;
         console.error('Error in feature Article', e), setFetchError(e);
       });
@@ -71,7 +75,9 @@ export default function Article() {
   async function submit() {
     if (!details?.article) throw new Error('No article');
     setStatus({ details: details, submiting: true });
-    await submitArticleCheckResult([details.article.lid, refuseCommit || true]);
+    await submitArticleCheckResult([
+      [details.article.lid, refuseCommit || true]
+    ]);
     setStatus(null);
     setOtherRefuseCommit('');
     updateArticle();
@@ -129,13 +135,13 @@ export default function Article() {
             {details.article.solutionFor && (
               <Text>
                 关联于题目{' '}
-                <Link
-                  href={`https://www.luogu.com.cn/problem/${details.article.solutionFor.pid}`}
-                  target="_blank"
-                >
-                  {details.article.solutionFor.pid}{' '}
-                  {details.article.solutionFor.title}
-                </Link>
+                <ProblemNameWithDifficulty
+                  pid={details.article.solutionFor.pid}
+                  name={details.article.solutionFor.title}
+                  difficulty={oldDifficultySystem.findIndex(
+                    x => x >= details.article.solutionFor!.difficulty
+                  )}
+                />
                 。
                 {details.countForProblem && (
                   <>
@@ -154,7 +160,10 @@ export default function Article() {
             )}
             <div className="adminCommit">
               <Text>管理员备注：</Text>
-              <textarea defaultValue={details.article.adminComment} />
+              <textarea
+                defaultValue={details.article.adminComment}
+                spellCheck="false"
+              />
             </div>
           </>
         ) : undefined}
@@ -185,7 +194,7 @@ export default function Article() {
                   很遗憾，您的《
                   <Link
                     href={`https://www.luogu.com.cn/article/${details.article.lid}`}
-                    target='_blank'
+                    target="_blank"
                   >
                     {details.article.title}
                   </Link>

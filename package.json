@@ -25,6 +25,7 @@
     "@mr.python/axios-userscript-adapter": "^1.0.0",
     "axios": "^1.7.2",
     "dayjs": "^1.11.11",
+    "deepmerge": "^4.3.1",
     "hast-util-to-jsx-runtime": "^2.3.0",
     "highlight.js": "^11.10.0",
     "katex": "^0.16.11",
