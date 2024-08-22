@@ -48,7 +48,7 @@ export default function App() {
       <div className="root">
         {!fetchError ? (
           <>
-            <nav>
+            <header>
               <a href="https://www.luogu.com.cn" style={{ marginRight: '1em' }}>
                 <Image
                   src="https://fecdn.luogu.com.cn/luogu/logo.png"
@@ -65,7 +65,7 @@ export default function App() {
                   width: '2px'
                 }}
               />
-              <div>
+              <nav>
                 {Features.map((s, i) => (
                   <button
                     type="button"
@@ -78,14 +78,14 @@ export default function App() {
                     {s[0]}
                   </button>
                 ))}
-              </div>
-            </nav>
+              </nav>
+            </header>
             {myInfo ? (
-              <div className="feature">
+              <main className="feature">
                 <MyInfoContext.Provider value={myInfo}>
                   <NowFeatureComponent />
                 </MyInfoContext.Provider>
-              </div>
+              </main>
             ) : (
               <Spinner size="huge" className="feature" />
             )}

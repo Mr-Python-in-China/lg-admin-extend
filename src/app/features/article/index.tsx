@@ -118,12 +118,29 @@ export default function Article() {
             </Text>
             <Text>
               用户 <UserName>{details.article.author}</UserName> 创建于{' '}
-              {dayjs(details.article.time * 1000).format('YYYY/MM/DD HH:mm:ss')}
-              {details.article.promoteResult.updateAt &&
-                '，提交于 ' +
-                  dayjs(details.article.promoteResult.updateAt * 1000).format(
-                    'YYYY/MM/DD HH:mm:ss'
-                  )}
+              <time
+                dateTime={dayjs(details.article.time * 1000).format(
+                  'YYYY/MM/DD HH:mm:ss'
+                )}
+              >
+                {dayjs(details.article.time * 1000).format(
+                  'YYYY/MM/DD HH:mm:ss'
+                )}
+              </time>
+              {details.article.promoteResult.updateAt && (
+                <>
+                  ，提交于{' '}
+                  <time
+                    dateTime={dayjs(
+                      details.article.promoteResult.updateAt * 1000
+                    ).format('YYYY/MM/DD HH:mm:ss')}
+                  >
+                    {dayjs(
+                      details.article.promoteResult.updateAt * 1000
+                    ).format('YYYY/MM/DD HH:mm:ss')}
+                  </time>
+                </>
+              )}
               。文章 LID：
               <Link
                 href={`https://www.luogu.com.cn/article/${details.article.lid}`}

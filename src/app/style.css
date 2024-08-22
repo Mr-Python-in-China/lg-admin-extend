@@ -9,7 +9,7 @@
   overflow: hidden;
   tab-size: 4;
 }
-.root > nav {
+.root > header {
   height: 4em;
   align-items: center;
   display: flex;
@@ -18,7 +18,7 @@
   border-bottom: 1px solid #f0f0f0;
   background-color: white;
 }
-.root > nav .nav-item {
+.root > header > nav > .nav-item {
   margin-left: 1em;
   margin-right: 1em;
   cursor: pointer;
