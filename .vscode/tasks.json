@@ -3,7 +3,7 @@
   "tasks": [
     {
       "label": "debug",
-      "dependsOn": ["local-server", "dev"]
+      "dependsOn": ["dev"]
     },
     {
       "label": "dev",
