@@ -1,6 +1,6 @@
 import getProcessor from './getProcessor';
 
-import './articleViewer.css';
+import './style.css';
 import 'katex/dist/katex.css';
 import 'highlight.js/styles/base16/tomorrow.css';
 import { memo } from 'react';
