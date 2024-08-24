@@ -85,9 +85,6 @@ async function (env, argv) {
       new WebpackBarPlugin(),
       ...(env.analyze ? [new BundleAnalyzerPlugin()] : []),
       new MiniCssExtractPlugin(),
-      new Webpack.DefinePlugin({
-        RUN: () => true
-      })
     ]
   });
 }

@@ -6,9 +6,8 @@ import remarkGfm from 'remark-gfm';
 import remarkParse from 'remark-parse';
 import remarkMath from './remarkMath.js';
 import remarkRehype from 'remark-rehype';
-import { unified } from 'unified';
+import { PluggableList, unified } from 'unified';
 import rehypeKatex from 'rehype-katex';
-import rehypeHighlight from 'rehype-highlight';
 import rehypeReact from 'rehype-react';
 import { visit } from 'unist-util-visit';
 import parsePath from 'parse-path';
@@ -22,15 +21,19 @@ const rehypeReactConfig: import('hast-util-to-jsx-runtime').Options = {
   jsxs: props.jsxs
 };
 
-export default function getProcessor() {
+export default function getProcessor({
+  remarkPlugins,
+  rehypePlugins
+}: { remarkPlugins?: PluggableList; rehypePlugins?: PluggableList } = {}) {
   return unified()
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkMath)
+    .use(remarkPlugins || [])
     .use(remarkRehype)
     .use(rehypeKatex)
     .use(hastBilibili)
-    .use(rehypeHighlight)
+    .use(rehypePlugins || [])
     .use(rehypeReact, rehypeReactConfig)
     .freeze();
 }
