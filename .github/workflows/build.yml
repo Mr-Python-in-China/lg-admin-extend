@@ -1,0 +1,43 @@
+name: Build Userscript
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['main']
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Set Node.js 22.2.0
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.2.0
+          cache: 'yarn'
+
+      - name: Install dependencies
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # if needed
+      - name: Build
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build
+
+      - name: Rename artifact
+        run: cp dist/main.user.js /tmp/lg-admin-extend.user.js
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4.3.6
+        with:
+          name: lg-admin-extend
+          path: /tmp/lg-admin-extend.user.js
