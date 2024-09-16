@@ -145,43 +145,56 @@ export const ProblemNameWithDifficulty = memo(
     name?: string;
     difficulty?: number;
   }) => {
-    const [difficultyState, setDifficultyState] = useState<number | undefined>(
+    const Res = ({
+      pid,
+      name,
       difficulty
-    );
-    const [nameState, setNameState] = useState<string | undefined>(name);
-    useEffect(() => {
-      if (difficultyState !== undefined && nameState !== undefined) return;
-      const cancel = new AbortController();
-      getProblemData(pid, { signal: cancel.signal })
-        .then(data => {
-          if (difficultyState === undefined)
-            setDifficultyState(data.currentData.problem.difficulty);
-          if (nameState === undefined)
-            setNameState(data.currentData.problem.title);
-        })
-        .catch(e => {
-          if (isCancel(e)) return;
-          console.error('Error when fetch problem data', e);
-        });
-      return () => cancel.abort();
-    }, []);
-    return (
-      <Link href={'https://www.luogu.com.cn/problem/' + pid} target="_blank">
-        <span
-          style={
-            difficultyState !== undefined
-              ? {
-                  fontWeight: 'bold',
-                  fontSize: '16px',
-                  color: DifficultyColor[difficultyState]
-                }
-              : undefined
-          }
-        >
-          {pid}
-        </span>
-        {nameState !== undefined && ' ' + nameState}
-      </Link>
-    );
+    }: {
+      pid: string;
+      name?: string;
+      difficulty?: number;
+    }) => {
+      const [difficultyState, setDifficultyState] = useState<
+        number | undefined
+      >(difficulty);
+      const [nameState, setNameState] = useState<string | undefined>(name);
+      useEffect(() => {
+        if (difficultyState !== undefined && nameState !== undefined) return;
+        const cancel = new AbortController();
+        getProblemData(pid, { signal: cancel.signal })
+          .then(data => {
+            if (difficultyState === undefined)
+              setDifficultyState(data.currentData.problem.difficulty);
+            if (nameState === undefined)
+              setNameState(data.currentData.problem.title);
+          })
+          .catch(e => {
+            if (isCancel(e)) return;
+            console.error('Error when fetch problem data', e);
+          });
+        return () => cancel.abort();
+      }, []);
+      return (
+        <Link href={'https://www.luogu.com.cn/problem/' + pid} target="_blank">
+          <span
+            style={
+              difficultyState !== undefined
+                ? {
+                    fontWeight: 'bold',
+                    fontSize: '16px',
+                    color: DifficultyColor[difficultyState]
+                  }
+                : undefined
+            }
+          >
+            {pid}
+          </span>
+          {nameState !== undefined && ' ' + nameState}
+        </Link>
+      );
+    };
+    return <Res pid={pid} difficulty={difficulty} name={name} key={pid} />;
   }
 );
+
+export const formatTime=(time:number|Date)=>dayjs(time).format('YYYY-MM-DD HH:mm:ss')

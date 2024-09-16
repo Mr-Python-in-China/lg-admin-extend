@@ -1,5 +1,5 @@
 import { SolutionAdminInfo } from '../../../interface';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ArticleViewer from './articleViewer';
 import {
   Button,
@@ -13,22 +13,34 @@ import {
   InfoLabel,
   Popover,
   PopoverTrigger,
-  PopoverSurface
+  PopoverSurface,
+  Drawer,
+  DrawerHeader,
+  DrawerHeaderTitle,
+  DrawerBody
 } from '@fluentui/react-components';
+import {
+  Dismiss24Regular,
+  HistoryDismiss32Filled
+} from '@fluentui/react-icons';
+import dayjs from 'dayjs';
+import emptyQueueImage from 'assets/emptyQueue.webp';
+import { isCancel } from 'axios';
+import { useNotUndefinedContext } from '../../../notUndefinedContext';
+import { MyInfoContext } from '../../contexts';
+import { oldDifficultySystem } from '../../../constants';
 import { getArticle, submitArticleCheckResult } from '../../../fetch';
 import {
   ErrorDiv,
+  formatTime,
   InputDateTime,
   ProblemNameWithDifficulty,
   UserName
 } from '../../utils';
-import dayjs from 'dayjs';
-import emptyQueueImage from 'assets/emptyQueue.webp';
+import ArticleHistory from './articleHistory';
+
 import './style.css';
-import { useNotUndefinedContext } from '../../../notUndefinedContext';
-import { MyInfoContext } from '../../contexts';
-import { isCancel } from 'axios';
-import { oldDifficultySystem } from '../../../constants';
+import { appendHistoryStorage } from './articleHistory/storage';
 
 export default function Article() {
   const [status, setStatus] = useState<{
@@ -42,6 +54,7 @@ export default function Article() {
   const [showAdminInfo, setShowAdminInfo] = useState(true);
   const [viewSourceCode, setViewSourceCode] = useState(false);
   const myProfile = useNotUndefinedContext(MyInfoContext);
+  const [showHistory, setShowHistory] = useState(false);
 
   let refuseCommit = otherRefuseCommit;
   if (refuseCommit)
@@ -78,6 +91,13 @@ export default function Article() {
     await submitArticleCheckResult([
       [details.article.lid, refuseCommit || true]
     ]);
+    appendHistoryStorage({
+      time: Date.now(),
+      lid: details.article.lid,
+      name: details.article.title,
+      status: refuseCommit || true,
+      forProblem: details.article.solutionFor?.pid
+    });
     setStatus(null);
     setOtherRefuseCommit('');
     updateArticle();
@@ -118,14 +138,8 @@ export default function Article() {
             </Text>
             <Text>
               用户 <UserName>{details.article.author}</UserName> 创建于{' '}
-              <time
-                dateTime={dayjs(details.article.time * 1000).format(
-                  'YYYY/MM/DD HH:mm:ss'
-                )}
-              >
-                {dayjs(details.article.time * 1000).format(
-                  'YYYY/MM/DD HH:mm:ss'
-                )}
+              <time dateTime={formatTime(details.article.time * 1000)}>
+                {formatTime(details.article.time * 1000)}
               </time>
               {details.article.promoteResult.updateAt && (
                 <>
@@ -237,7 +251,7 @@ export default function Article() {
           <Text as="span">队列中还有 {details?.count || 0} 篇文章。</Text>
           <Button
             appearance="primary"
-            disabled={!details?.article}
+            disabled={!(details?.article && !status?.submiting)}
             onClick={() => submit()}
           >
             {!details?.article ? '暂无文章' : refuseCommit ? '拒绝' : '通过'}
@@ -288,7 +302,39 @@ export default function Article() {
             </Popover>
           </InfoLabel>
         </div>
+        <div className="submitButton">
+          <Button
+            appearance="transparent"
+            icon={<HistoryDismiss32Filled />}
+            onClick={() => setShowHistory(true)}
+          />
+        </div>
       </div>
+      <>
+        <Drawer
+          open={showHistory}
+          onOpenChange={(_, { open }) => setShowHistory(open)}
+          position="end"
+        >
+          <DrawerHeader>
+            <DrawerHeaderTitle
+              action={
+                <Button
+                  appearance="subtle"
+                  aria-label="Close"
+                  icon={<Dismiss24Regular />}
+                  onClick={() => setShowHistory(false)}
+                />
+              }
+            >
+              审核历史
+            </DrawerHeaderTitle>
+          </DrawerHeader>
+          <DrawerBody>
+            <ArticleHistory />
+          </DrawerBody>
+        </Drawer>
+      </>
     </div>
   ) : (
     <ErrorDiv

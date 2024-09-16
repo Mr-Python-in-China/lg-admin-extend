@@ -29,6 +29,7 @@
     "hast-util-to-jsx-runtime": "^2.3.0",
     "highlight.js": "^11.10.0",
     "katex": "^0.16.11",
+    "lg-markdown-processor": "https://github.com/Mr-Python-in-China/lg-markdown-processor.git",
     "lodash": "^4.17.21",
     "mdast-util-math": "^3.0.0",
     "micromark-factory-space": "^2.0.0",

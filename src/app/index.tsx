@@ -29,6 +29,7 @@ export default function App() {
   const [myInfo, setMyInfo] = useState<UserSummary | null>(null);
   const [fetchError, setFetchError] = useState<unknown | undefined>(undefined);
   useEffect(() => {
+    if (fetchError) return;
     let ignore = false;
     fetchMyInfo()
       .then(x => {
@@ -38,10 +39,10 @@ export default function App() {
         if (!ignore) console.error('Error in App', e), setFetchError(e);
       });
     return () => void (ignore = true);
-  }, []);
+  }, [fetchError]);
   useEffect(() => {
     if (nowFeature < 0) setNowFeature(-nowFeature - 1);
-  });
+  }, [nowFeature]);
 
   return (
     <FluentProvider theme={theme}>
@@ -72,7 +73,12 @@ export default function App() {
                     onClick={() => setNowFeature(-i - 1)}
                     key={i}
                     className="nav-item"
-                    style={{ fontWeight: nowFeature === i ? 'bold' : 'normal' }}
+                    style={{
+                      fontWeight:
+                        (nowFeature < 0 ? -nowFeature - 1 : nowFeature) === i
+                          ? 'bold'
+                          : 'normal'
+                    }}
                     tabIndex={0}
                   >
                     {s[0]}
@@ -91,7 +97,7 @@ export default function App() {
             )}
           </>
         ) : (
-          <ErrorDiv err={fetchError} retry={() => {}} />
+          <ErrorDiv err={fetchError} retry={() => setFetchError(undefined)} />
         )}
       </div>
     </FluentProvider>

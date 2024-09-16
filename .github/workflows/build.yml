@@ -19,10 +19,10 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
-      - name: Set Node.js 22.2.0
+      - name: Set Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 22.2.0
+          node-version-file: '.nvmrc'
           cache: 'yarn'
 
       - name: Install dependencies
