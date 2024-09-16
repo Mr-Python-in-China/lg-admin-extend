@@ -16,10 +16,10 @@ A note[^1]
 
 ## Table
 
-| a | b  |  c |  d  |
-| - | :- | -: | :-: |
+| a   | b   |   c |  d  |
+| --- | :-- | --: | :-: |
 
 ## Tasklist
 
-* [ ] to do
-* [x] done
+- [ ] to do
+- [x] done

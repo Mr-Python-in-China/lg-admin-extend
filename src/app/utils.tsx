@@ -197,4 +197,5 @@ export const ProblemNameWithDifficulty = memo(
   }
 );
 
-export const formatTime=(time:number|Date)=>dayjs(time).format('YYYY-MM-DD HH:mm:ss')
+export const formatTime = (time: number | Date) =>
+  dayjs(time).format('YYYY-MM-DD HH:mm:ss');
