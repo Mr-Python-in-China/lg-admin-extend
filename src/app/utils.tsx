@@ -21,12 +21,8 @@ export function UserName({ children }: { children: UserSummary }) {
         color: UsernameColor[children.color as keyof typeof UsernameColor]
       }}
     >
-      <>{children.name}</>
-      {children.ccfLevel > 2 && (
-        <span style={{ marginLeft: '4px' }}>
-          <CcfLevelSvg level={children.ccfLevel} />
-        </span>
-      )}
+      <span>{children.name}</span>
+      {children.ccfLevel > 2 && <CcfLevelSvg level={children.ccfLevel} />}
       {children.badge && (
         <span
           className="username-badge"
@@ -34,8 +30,7 @@ export function UserName({ children }: { children: UserSummary }) {
             backgroundColor:
               UsernameColor[children.color as keyof typeof UsernameColor],
             borderColor:
-              UsernameColor[children.color as keyof typeof UsernameColor],
-            marginLeft: '4px'
+              UsernameColor[children.color as keyof typeof UsernameColor]
           }}
         >
           {children.badge}

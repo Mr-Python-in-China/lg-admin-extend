@@ -1,3 +1,17 @@
-.articleViewer-heilightSpace {
-  background-color: #9f9;
+.articleHighlight.Space {
+  background-color: #00ff2d;
+}
+.articleHighlight.NeedSpaceBetweenPunctuationAndChineseChar {
+  position: relative;
+  display: inline-block;
+  width: 2px;
+  > :first-child {
+    position: absolute;
+    left: -2px;
+    top: -18px;
+    width: 6px;
+    height: 24px;
+    background-image: url(assets/needSpaceBetweenPunctuationAndChineseChar.svg);
+    background-size: 100% 100%;
+  }
 }

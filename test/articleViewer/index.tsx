@@ -55,6 +55,7 @@ function MarkdownTestComponent() {
             overflowY: 'auto',
             overflowX: 'hidden'
           }}
+          className="articleViewer"
         >
           <ArticleViewer>{markdownText}</ArticleViewer>
         </div>

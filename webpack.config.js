@@ -1,90 +1,32 @@
 //@ts-check
 
 import { resolve } from 'path';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
-import Webpack from 'webpack';
 import { monkey } from 'webpack-monkey';
-import terser from 'terser-webpack-plugin';
-import WebpackBarPlugin from 'webpackbar';
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import Base from './webpack.config.base.js';
 
-export default /**
+/**
+ * @param {Record<string,string|boolean>} env
  * @param {{ mode: 'production' | 'development' | 'none' | undefined; }} argv
  * @returns { Promise<import('webpack').Configuration> }
  */
-async function (env, argv) {
+export default async function (env, argv) {
   const mode = argv.mode || 'development';
-  return monkey({
-    mode,
-    entry: resolve('src/index'),
-    output: { path: resolve('dist') },
-    devtool: argv.mode === 'development' && 'eval-source-map',
-    module: {
-      rules: [
-        {
-          test: /\.tsx?$/,
-          use: 'ts-loader'
-        },
-        {
-          test: /\.css$/i,
-          use: [
-            MiniCssExtractPlugin.loader,
-            'css-loader',
-            {
-              loader: 'postcss-loader',
-              options: { postcssOptions: { plugins: [['postcss-preset-env']] } }
-            }
-          ]
-        },
-        {
-          test: /.(woff2?|eot|ttf|otf)|(webp)$/,
-          type: 'asset/inline'
-        }
-      ]
-    },
-    resolve: {
-      extensions: ['.ts', '.tsx', '.js', '.json', '.css', '.webp'],
-      alias: {
-        'luogu-api': resolve('luogu-api-docs', 'luogu-api'),
-        assets: resolve('assets')
+  /**@type {Parameters<(typeof import('webpack-monkey').monkey)>[0]}*/
+  const base = await Base(env, argv);
+  base.monkey = {
+    debug: mode === 'development',
+    meta: {
+      resolve: () => resolve('meta.js'),
+      async load({ file }) {
+        /**@type {import('./meta.js').default & {match: string | string[]}} */
+        const res = (await import(file)).default;
+        if (typeof res.match === 'string') res.match = [res.match];
+        return res;
       }
     },
-    optimization:
-      mode == 'production'
-        ? {
-            minimize: true,
-            usedExports: true,
-            innerGraph: true,
-            minimizer: [
-              new terser({
-                parallel: true,
-                terserOptions: {
-                  format: { comments: false }
-                },
-                extractComments: false
-              }),
-              new CssMinimizerPlugin()
-            ]
-          }
-        : {},
-    monkey: {
-      debug: mode === 'development',
-      meta: {
-        resolve: () => resolve('meta.js'),
-        async load({ file }) {
-          /**@type {import('./meta.js').default & {match: string | string[]}} */
-          const res = (await import(file)).default;
-          if (typeof res.match === 'string') res.match = [res.match];
-          return res;
-        }
-      },
-      beautify: { prettier: false }
-    },
-    plugins: [
-      new WebpackBarPlugin(),
-      ...(env.analyze ? [new BundleAnalyzerPlugin()] : []),
-      new MiniCssExtractPlugin()
-    ]
-  });
+    beautify: { prettier: false }
+  };
+  base.entry = resolve('src/index');
+  base.output = { path: resolve('dist') };
+  return monkey(base);
 }

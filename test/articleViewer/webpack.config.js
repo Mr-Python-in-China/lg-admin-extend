@@ -3,46 +3,29 @@
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import Base from '../../webpack.config.base.js';
 
 const dirname = import.meta.dirname;
 
-export default {
-  mode: 'development',
-  entry: path.join(dirname, 'index.tsx'),
-  plugins: [
+/**
+ * @param {Record<string,string|boolean>} env
+ * @param {{ mode: 'production' | 'development' | 'none' | undefined; }} argv
+ * @returns { Promise<import('webpack').Configuration> }
+ */
+export default async function (env, argv) {
+  const base = await Base(env, argv);
+  (base.plugins || (base.plugins = [])).push(
     new HtmlWebpackPlugin({
       filename: 'index.html'
-    }),
-    new MiniCssExtractPlugin()
-  ],
-  devServer: {
+    })
+  );
+  base.devServer = {
     port: 22552,
     static: {
       directory: path.join(dirname, 'testcase'),
       publicPath: '/'
     }
-  },
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js']
-  },
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        use: 'ts-loader'
-      },
-      {
-        test: /\.css$/i,
-        use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
-          {
-            loader: 'postcss-loader',
-            options: { postcssOptions: { plugins: [['postcss-preset-env']] } }
-          }
-        ]
-      }
-    ]
-  },
-  devtool: 'eval-source-map'
-};
+  };
+  base.entry = path.join(dirname, 'index.tsx');
+  return base;
+}
