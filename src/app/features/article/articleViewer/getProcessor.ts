@@ -50,7 +50,11 @@ function hastHighlightSpace() {
         )
         .flatMap<Exclude<ElementContent, Text> | string>((child, idx, arr) => {
           if (typeof child !== 'string') return child;
-          if (child === ' ') return HighlightElement.Space;
+          if (
+            child === ' ' ||
+            child === '\n' // \n is render as space
+          )
+            return HighlightElement.Space;
           const prevElement = idx !== 0 ? arr[idx - 1] : undefined;
           if (
             typeof prevElement === 'string' &&
