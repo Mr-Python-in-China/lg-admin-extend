@@ -57,7 +57,10 @@ function MarkdownTestComponent() {
           }}
           className="articleViewer"
         >
-          <ArticleViewer>{markdownText}</ArticleViewer>
+          <ArticleViewer
+            markdown={markdownText}
+            addCommit={s => console.log('Add commit: ', s)}
+          ></ArticleViewer>
         </div>
       </div>
     </div>

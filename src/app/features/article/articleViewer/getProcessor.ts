@@ -4,6 +4,7 @@ import rehypeHighlight from 'rehype-highlight';
 import { visit, SKIP } from 'unist-util-visit';
 import luoguMarkdownProcessor from 'lg-markdown-processor';
 import { Element, ElementContent, Text } from 'hast';
+import * as HighlightElement from './highlightElement';
 
 function checkClass(element: Element, target: string) {
   let className = element.properties['className'];
@@ -16,7 +17,7 @@ function checkClass(element: Element, target: string) {
 }
 
 const rehypeReactConfig: import('hast-util-to-jsx-runtime').Options = {
-  Fragment: 'article',
+  Fragment: props.Fragment,
   // @ts-expect-error
   jsx: props.jsx,
   // @ts-expect-error
@@ -35,32 +36,6 @@ namespace CharTest {
   export const ChineseChar = /\p{sc=Han}/u;
   export const Punctuation = /\p{P}/u;
   export const EnglishChar = /[a-zA-Z]/;
-}
-namespace HighlightElement {
-  export const Space: Element = {
-    type: 'element',
-    tagName: 'span',
-    properties: { className: ['articleHighlight', 'Space'] },
-    children: [{ type: 'text', value: ' ' }]
-  };
-  export const NeedSpaceBetweenEnglishCharAndChineseChar: Element = {
-    type: 'element',
-    tagName: 'span',
-    properties: {
-      className: [
-        'articleHighlight',
-        'NeedSpaceBetweenPunctuationAndChineseChar'
-      ]
-    },
-    children: [
-      {
-        type: 'element',
-        tagName: 'div',
-        properties: {},
-        children: []
-      }
-    ]
-  };
 }
 function hastHighlightSpace() {
   return (tree: import('hast').Root) =>

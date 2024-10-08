@@ -102,6 +102,15 @@ export default function Article() {
     setOtherRefuseCommit('');
     updateArticle();
   }
+  function addCommit(s: string) {
+    setOtherRefuseCommit(
+      otherRefuseCommit +
+        (otherRefuseCommit === '' || /。|；|，|？|！$/.test(otherRefuseCommit)
+          ? ''
+          : '；') +
+        s
+    );
+  }
 
   return !fetchError ? (
     <div className="articleFeature">
@@ -118,7 +127,10 @@ export default function Article() {
               className="articleViewer"
               style={{ display: viewSourceCode ? 'none' : 'block' }}
             >
-              <ArticleViewer>{details.article.content}</ArticleViewer>
+              <ArticleViewer
+                markdown={details.article.content}
+                addCommit={addCommit}
+              />
             </div>
           </>
         ) : (

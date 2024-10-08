@@ -81,6 +81,7 @@ div.articleQueueEmpty > span {
   column-gap: 15px;
   justify-content: flex-end;
   align-items: center;
+  flex-wrap: wrap;
 }
 .viewOperatorCommit {
   margin-left: 1em;
