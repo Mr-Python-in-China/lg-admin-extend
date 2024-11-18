@@ -38,6 +38,7 @@ export const fetchMyInfo = (config: AxiosRequestConfig = {}) =>
 
 export const getArticle = (
   skipBefore: number,
+  category: number[] = [],
   config: AxiosRequestConfig = {}
 ) =>
   axios
@@ -47,7 +48,8 @@ export const getArticle = (
       deepmerge(
         {
           params: {
-            skipBefore: skipBefore || 0
+            skipBefore: skipBefore || 0,
+            category: category.join(',')
           }
         },
         config

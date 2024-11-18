@@ -28,7 +28,7 @@ import emptyQueueImage from 'assets/emptyQueue.webp';
 import { isCancel } from 'axios';
 import { useNotUndefinedContext } from '../../../notUndefinedContext';
 import { MyInfoContext } from '../../contexts';
-import { oldDifficultySystem } from '../../../constants';
+import { ArticleCategory, oldDifficultySystem } from '../../../constants';
 import { getArticle, submitArticleCheckResult } from '../../../fetch';
 import {
   ErrorDiv,
@@ -55,6 +55,7 @@ export default function Article() {
   const [viewSourceCode, setViewSourceCode] = useState(false);
   const myProfile = useNotUndefinedContext(MyInfoContext);
   const [showHistory, setShowHistory] = useState(false);
+  const [solutionOnly, setSolutionOnly] = useState(true);
 
   let refuseCommit = otherRefuseCommit;
   if (refuseCommit)
@@ -63,7 +64,9 @@ export default function Article() {
 
   useEffect(() => {
     const cancel = new AbortController();
-    getArticle(skipBefore / 1000, { signal: cancel.signal })
+    getArticle(skipBefore / 1000, solutionOnly ? [2] : [], {
+      signal: cancel.signal
+    })
       .then(v => {
         setStatus({ details: v }),
           v.article && setSkipBefore(v.article.promoteResult.updateAt * 1000);
@@ -76,7 +79,7 @@ export default function Article() {
   }, []);
   function updateArticle() {
     setStatus(null);
-    getArticle(skipBefore / 1000)
+    getArticle(skipBefore / 1000, solutionOnly ? [2] : [])
       .then(v => {
         setStatus({ details: v });
         if (v.article) setSkipBefore(v.article.promoteResult.updateAt * 1000);
@@ -175,32 +178,35 @@ export default function Article() {
                 {details.article.lid}
               </Link>
             </Text>
-            {details.article.solutionFor && (
-              <Text>
-                关联于题目{' '}
-                <ProblemNameWithDifficulty
-                  pid={details.article.solutionFor.pid}
-                  name={details.article.solutionFor.title}
-                  difficulty={oldDifficultySystem.findIndex(
-                    x => x >= details.article.solutionFor!.difficulty
+            <Text>
+              文章分类：{ArticleCategory[details.article.category]}。
+              {details.article.solutionFor && (
+                <>
+                  关联于题目{' '}
+                  <ProblemNameWithDifficulty
+                    pid={details.article.solutionFor.pid}
+                    name={details.article.solutionFor.title}
+                    difficulty={oldDifficultySystem.findIndex(
+                      x => x >= details.article.solutionFor!.difficulty
+                    )}
+                  />
+                  。
+                  {details.countForProblem && (
+                    <>
+                      共有 {details.countForProblem.pending} 篇待审核题解，
+                      {details.countForProblem.available} 篇
+                      <Link
+                        href={`https://www.luogu.com.cn/problem/solution/${details.article.solutionFor.pid}`}
+                        target="_blank"
+                      >
+                        已通过题解
+                      </Link>
+                      。
+                    </>
                   )}
-                />
-                。
-                {details.countForProblem && (
-                  <>
-                    共有 {details.countForProblem.pending} 篇待审核题解，
-                    {details.countForProblem.available} 篇
-                    <Link
-                      href={`https://www.luogu.com.cn/problem/solution/${details.article.solutionFor.pid}`}
-                      target="_blank"
-                    >
-                      已通过题解
-                    </Link>
-                    。
-                  </>
-                )}
-              </Text>
-            )}
+                </>
+              )}
+            </Text>
             <div className="adminCommit">
               <Text>管理员备注：</Text>
               <textarea
@@ -261,6 +267,11 @@ export default function Article() {
         </Field>
         <div className="submitButton">
           <Text as="span">队列中还有 {details?.count || 0} 篇文章。</Text>
+          <Switch
+            label="只审题解"
+            checked={solutionOnly}
+            onChange={(e, x) => setSolutionOnly(x.checked)}
+          />
           <Button
             appearance="primary"
             disabled={!(details?.article && !status?.submiting)}

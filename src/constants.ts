@@ -20,3 +20,14 @@ export const UsernameColor = {
   Gray: 'rgb(191, 191, 191)',
   Cheater: 'rgb(173, 139, 0)'
 };
+
+export const ArticleCategory: Record<number, string> = {
+  '1': '个人记录',
+  '2': '题解',
+  '3': '科技·工程',
+  '4': '算法·理论',
+  '5': '生活·游记',
+  '6': '学习·文化课',
+  '7': '休闲·娱乐',
+  '8': '闲话'
+};
